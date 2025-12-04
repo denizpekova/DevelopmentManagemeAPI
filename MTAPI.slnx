@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="BusinessLayer/BusinessLayer.csproj" />
+  <Project Path="DataAcessLayerss/DataAcessLayerss.csproj" />
+  <Project Path="EntityLayer/EntityLayer.csproj" />
+  <Project Path="MTAPI/MTAPI.csproj" />
+</Solution>
