@@ -13,6 +13,8 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<ILicenseRepository,LicenseRepository>();
 builder.Services.AddScoped<ILicenseServices, LicenseServices>();
+builder.Services.AddScoped<IProdutsRepository, ProductsRepository>();
+builder.Services.AddScoped<IProductServices, ProductService>();
 builder.Services.AddDbContext<AppDbContext>();
 
 

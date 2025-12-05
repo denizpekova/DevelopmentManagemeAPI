@@ -17,5 +17,6 @@ namespace DataAcessLayerss.Context
         }
 
         public DbSet<license> Licenses { get; set; }
+        public DbSet<Products> Products { get; set; }
     }
 }
