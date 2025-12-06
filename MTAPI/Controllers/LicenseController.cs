@@ -23,7 +23,7 @@ namespace MTAPI.Controllers
 
             if (result == null || !result.Any())
             {
-                var notFound = new Response<List<license>>
+                var notFound = new ResponseMessage<List<license>>
                 {
                     Success = false,
                     StatusCode = 404,
@@ -33,7 +33,7 @@ namespace MTAPI.Controllers
                 return NotFound(notFound);
             }
             
-            var sucesssResponse = new Response<List<license>>
+            var sucesssResponse = new ResponseMessage<List<license>>
             {
                 Success = true,
                 StatusCode = 200,
@@ -50,7 +50,7 @@ namespace MTAPI.Controllers
         {
             if (string.IsNullOrEmpty(key))
             {
-                var badRequest = new Response<license>
+                var badRequest = new ResponseMessage<license>
                 {
                     Success = false,
                     StatusCode = 400,
@@ -64,7 +64,7 @@ namespace MTAPI.Controllers
             var result = licenseServices.GetLicenseByKey(key);
             if (result == null)
             {
-                var notFound = new Response<license>
+                var notFound = new ResponseMessage<license>
                 {
                     Success = false,
                     StatusCode = 404,
@@ -74,7 +74,7 @@ namespace MTAPI.Controllers
 
                 return NotFound(notFound);
             }
-            var successResponse = new Response<license>
+            var successResponse = new ResponseMessage<license>
             {
                 Success = true,
                 StatusCode = 200,
@@ -95,7 +95,7 @@ namespace MTAPI.Controllers
 
        
             var lisans = licenseServices.AddLicense(newLicense);
-            var successResponse = new Response<license>
+            var successResponse = new ResponseMessage<license>
             {
                 Success = true,
                 StatusCode = 201,
@@ -118,7 +118,7 @@ namespace MTAPI.Controllers
             var lisansUpdate = licenseServices.UpdateLicense(updateLisans);
             if (lisansUpdate == null)
             {
-                var notFound = new Response<license>
+                var notFound = new ResponseMessage<license>
                 {
                     Success = false,
                     StatusCode = 404,
@@ -128,7 +128,7 @@ namespace MTAPI.Controllers
                 return NotFound(notFound);
             }
 
-            var sucessResponse = new Response<license>
+            var sucessResponse = new ResponseMessage<license>
             {
                 Success = true,
                 StatusCode = 200,
@@ -143,7 +143,7 @@ namespace MTAPI.Controllers
         {
             if (string.IsNullOrEmpty(key))
             {
-                var badRequest = new Response<license>
+                var badRequest = new ResponseMessage<license>
                 {
                     Success = false,
                     StatusCode = 400,
@@ -155,7 +155,7 @@ namespace MTAPI.Controllers
 
             licenseServices.DeleteLicense(key);
 
-            var sucessResult = new Response<license>
+            var sucessResult = new ResponseMessage<license>
             {
                 Success = true,
                 StatusCode = 200,

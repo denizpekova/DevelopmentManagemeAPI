@@ -1,6 +1,6 @@
 ﻿namespace MTAPI.Models
 {
-    public class Response<T>
+    public class ResponseMessage<T>
     {
         public bool Success { get; set; }
         public int StatusCode { get; set; }

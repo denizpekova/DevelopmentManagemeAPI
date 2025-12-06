@@ -1,7 +1,9 @@
-﻿using BusinessLayer.Abstrack;
+﻿using Azure;
+using BusinessLayer.Abstrack;
 using EntityLayer.Concrete;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MTAPI.Models;
 
 namespace MTAPI.Controllers
 {
@@ -29,15 +31,41 @@ namespace MTAPI.Controllers
             var result = productServices.GetProductsById(id);
             if (result == null)
             {
-                return NotFound(new { success = false, message = "Product not found." });
+                var NotFounds = new ResponseMessage<Products>
+                {
+                    Success = false,
+                    StatusCode = 404,
+                    Message = "Ürün bulunamadı",
+                    Data = null
+                };
+
+                return NotFound(NotFounds);
             }
-            return Ok(new { success = true, data = result });
+            var sucessResponse = new ResponseMessage<Products>
+            {
+                Success = true,
+                StatusCode = 200,
+                Message = "",
+                Data = result
+            };
+            return Ok(sucessResponse);
         }
 
         [HttpGet("getByCategory/{category}")]
         public IActionResult GetByCategory(string category)
         {
             var result = productServices.getProductsByCategory(category);
+            if (result == null)
+                {
+                var NotFounds = new ResponseMessage<List<Products>>
+                {
+                    Success = false,
+                    StatusCode = 404,
+                    Message = "Category bulunamadı",
+                    Data = null
+                };
+                return NotFound(NotFounds);
+            }
             return Ok(new { success = true, data = result });
         }
 
@@ -48,15 +76,31 @@ namespace MTAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            try
-            {
+            
                 var result = productServices.AddProducts(newProduct);
-                return Ok(new { success = true, data = result });
-            }
-            catch (Exception ex)
+            if (result == null)
             {
-                return StatusCode(500, new { success = false, message = $"Error adding product: {ex.Message}" });
+                var notFound = new ResponseMessage<Products>
+                {
+                    Success = false,
+                    StatusCode = 500,
+                    Message = "ürün eklerken bir hata oluştu",
+                    Data = null
+                };
+                return BadRequest(notFound);
             }
+            var sucessResponse = new ResponseMessage<Products>
+            {
+                Success = true,
+                StatusCode = 201,
+                Message = "Ürün başarılı şekilde eklendi",
+                Data = result,
+                Count = 1
+
+            };
+
+            return Ok(sucessResponse);
+           
         }
 
         [HttpPut("update")]
@@ -66,29 +110,45 @@ namespace MTAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            try
-            {
-                var result = productServices.UpdateProducts(updatedProduct);
-                return Ok(new { success = true, data = result });
+       
+            var result = productServices.UpdateProducts(updatedProduct);
+            if (result == null) {
+                var notFound = new ResponseMessage<Products>
+                {
+                    Success = false,
+                    StatusCode = 404,
+                    Message = "Ürün bulunamadı",
+                    Data = null
+                };
+                return NotFound(notFound);
             }
-            catch (Exception ex)
+
+            var successResponse = new ResponseMessage<Products>
             {
-                return StatusCode(500, new { success = false, message = $"Error updating product: {ex.Message}" });
-            }
+                Success = true,
+                StatusCode = 200,
+                Message = "Ürün başarılı şekilde güncellendi.",
+                Data = result
+            };
+            return Ok(successResponse);
+      
         }
 
         [HttpDelete("delete/{id}")]
         public IActionResult DeleteProduct(int id)
         {
-            try
+
+            productServices.DeleteProducts(id);
+            var successResponse =  new ResponseMessage<Products>
             {
-                productServices.DeleteProducts(id);
-                return Ok(new { success = true, message = "Product deleted successfully." });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { success = false, message = $"Error deleting product: {ex.Message}" });
-            }
+                Success = true,
+                StatusCode = 200,
+                Message = "Ürün başarılı şekilde silindi.",
+                Data = null
+            };
+            return Ok(successResponse);
+
+            
         }
     }
 }
