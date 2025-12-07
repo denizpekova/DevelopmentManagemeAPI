@@ -6,7 +6,7 @@
         {
         }
 
-        public GlobalNotFoundException(string key) : base($" This {key} key could not found ")
+        public GlobalNotFoundException(string key) : base($" This {key}  could not found ")
         {
         }
     }

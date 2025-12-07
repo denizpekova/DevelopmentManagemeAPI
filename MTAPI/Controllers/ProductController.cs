@@ -3,6 +3,7 @@ using BusinessLayer.Abstrack;
 using EntityLayer.Concrete;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MTAPI.Extansions;
 using MTAPI.Models;
 
 namespace MTAPI.Controllers
@@ -30,25 +31,10 @@ namespace MTAPI.Controllers
         {
             var result = productServices.GetProductsById(id);
             if (result == null)
-            {
-                var NotFounds = new ResponseMessage<Products>
-                {
-                    Success = false,
-                    StatusCode = 404,
-                    Message = "Ürün bulunamadı",
-                    Data = null
-                };
+                throw new GlobalNotFoundException(id);
 
-                return NotFound(NotFounds);
-            }
-            var sucessResponse = new ResponseMessage<Products>
-            {
-                Success = true,
-                StatusCode = 200,
-                Message = "",
-                Data = result
-            };
-            return Ok(sucessResponse);
+
+            return Ok(result);
         }
 
         [HttpGet("getByCategory/{category}")]
@@ -56,16 +42,8 @@ namespace MTAPI.Controllers
         {
             var result = productServices.getProductsByCategory(category);
             if (result == null)
-                {
-                var NotFounds = new ResponseMessage<List<Products>>
-                {
-                    Success = false,
-                    StatusCode = 404,
-                    Message = "Category bulunamadı",
-                    Data = null
-                };
-                return NotFound(NotFounds);
-            }
+               throw new GlobalNotFoundException(category);
+
             return Ok(new { success = true, data = result });
         }
 
@@ -73,33 +51,13 @@ namespace MTAPI.Controllers
         public IActionResult AddProduct([FromBody] Products newProduct)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
             
-                var result = productServices.AddProducts(newProduct);
+            var result = productServices.AddProducts(newProduct);
             if (result == null)
-            {
-                var notFound = new ResponseMessage<Products>
-                {
-                    Success = false,
-                    StatusCode = 500,
-                    Message = "ürün eklerken bir hata oluştu",
-                    Data = null
-                };
-                return BadRequest(notFound);
-            }
-            var sucessResponse = new ResponseMessage<Products>
-            {
-                Success = true,
-                StatusCode = 201,
-                Message = "Ürün başarılı şekilde eklendi",
-                Data = result,
-                Count = 1
-
-            };
-
-            return Ok(sucessResponse);
+                throw new GlobalNotFoundException("product is null");
+ 
+            return Ok(result);
            
         }
 
@@ -112,25 +70,10 @@ namespace MTAPI.Controllers
             }
        
             var result = productServices.UpdateProducts(updatedProduct);
-            if (result == null) {
-                var notFound = new ResponseMessage<Products>
-                {
-                    Success = false,
-                    StatusCode = 404,
-                    Message = "Ürün bulunamadı",
-                    Data = null
-                };
-                return NotFound(notFound);
-            }
+            if (result == null)      
+               throw new GlobalNotFoundException("product is null");
 
-            var successResponse = new ResponseMessage<Products>
-            {
-                Success = true,
-                StatusCode = 200,
-                Message = "Ürün başarılı şekilde güncellendi.",
-                Data = result
-            };
-            return Ok(successResponse);
+            return Ok(result);
       
         }
 
@@ -139,14 +82,7 @@ namespace MTAPI.Controllers
         {
 
             productServices.DeleteProducts(id);
-            var successResponse =  new ResponseMessage<Products>
-            {
-                Success = true,
-                StatusCode = 200,
-                Message = "Ürün başarılı şekilde silindi.",
-                Data = null
-            };
-            return Ok(successResponse);
+            return NoContent();
 
             
         }
